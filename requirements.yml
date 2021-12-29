@@ -1,0 +1,11 @@
+name: nlp_hw2
+dependencies:
+    - pytorch
+    - pandas
+    - seaborn
+    - scikit-learn
+    - numpy
+    - matplotlib
+    - scipy
+    - transformers
+    - datasets

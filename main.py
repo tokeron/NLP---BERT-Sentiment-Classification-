@@ -7,7 +7,7 @@ from transformers import TrainingArguments
 from transformers import Trainer
 
 # paths
-DATA_PATH = Path("/content/drive/MyDrive/Technion/NLP course Winter 2021-2022/Tutorials/Tutorial_10_bert/rumor data")
+DATA_PATH = Path("clean_data/rumor data")
 OUT_PATH = Path("/content/drive/MyDrive/Technion/NLP course Winter 2021-2022/Tutorials/Tutorial_10_bert/results")
 
 
