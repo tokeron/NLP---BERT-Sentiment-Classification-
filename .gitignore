@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+HW2 - WET.docx
+clean_data/office_products/unlabeled.csv
+clean_data/office_products/test.csv
+clean_data/office_products/dev.csv
+clean_data/office_products/desktop.ini
+clean_data/desktop.ini
+clean_data/baby/unlabeled.csv
+clean_data/baby/train.csv
+clean_data/baby/dev.csv
+clean_data/baby/desktop.ini
