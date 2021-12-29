@@ -4,3 +4,5 @@
 *.docx
 *.csv
 *.ini
+*.xml
+*.iml
