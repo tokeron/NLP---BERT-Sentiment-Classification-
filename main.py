@@ -6,6 +6,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trai
 from sklearn.metrics import f1_score
 from datasets import load_dataset, load_metric
 import transformers
+from competitive_model import UnlabeledDataset, dataset_2_masked_labeled_inputs
 
 # path to the data
 baby_path = Path("clean_data/baby")
@@ -52,6 +53,11 @@ if __name__ == '__main__':
     tokenized_unlabeled_datasets.set_format('torch')
     tokenized_datasets.set_format('torch')
 
+    baby_dataset = unlabeled_raw_datasets['baby']['review']
+    inputs = dataset_2_masked_labeled_inputs(dataset=baby_dataset, tokenizer=tokenizer)
+    # create unlabeled dataset from it
+    tokenized_unlabeled_dataset_baby = UnlabeledDataset(inputs)
+
     # Unsupervised training by unlabeled data
     # define the arguments for the trainer
     bert_pretraining_args = TrainingArguments(
@@ -67,16 +73,16 @@ if __name__ == '__main__':
         eval_steps=2
     )
 
-    data_collator = DataCollatorForLanguageModeling(
-        tokenizer=tokenizer, mlm=True, mlm_probability=0.15
-    )
-
     bert_baby_pretrainer = Trainer(
         model=bert_for_pretraining,
         args=bert_pretraining_args,
-        train_dataset=tokenized_unlabeled_datasets['baby'],
-        eval_dataset=tokenized_unlabeled_datasets['baby']
+        train_dataset=tokenized_unlabeled_dataset_baby #tokenized_unlabeled_datasets['baby'],
+        # eval_dataset=tokenized_unlabeled_datasets['baby']
     )
+
+    # data_collator = DataCollatorForLanguageModeling(
+    #     tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+    # )
 
     # bert_office_products_pretrainer = Trainer(
     #     model=bert_for_pretraining,
@@ -89,6 +95,7 @@ if __name__ == '__main__':
     bert_baby_pretrainer.train()
     # bert_office_products_pretrainer.train()
 
+    print('done unlabeled')
 
     # Prepare labels for the supervized learning
     for split in tokenized_datasets:
