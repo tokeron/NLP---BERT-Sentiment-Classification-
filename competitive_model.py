@@ -37,3 +37,4 @@ def dataset_2_masked_labeled_inputs(dataset, tokenizer):
     # inputs.input_ids[0, selection] = 103  # [Mask] token
     for i in range(inputs.input_ids.shape[0]):
         inputs.input_ids[i, selection[i]] = 103
+    return inputs
