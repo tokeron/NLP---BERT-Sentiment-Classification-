@@ -7,7 +7,8 @@ class UnlabeledDataset(Dataset):
         self.encodings = encodings
 
     def __getitem__(self, idx):
-        return {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        a = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        return a
 
     def __len__(self):
         return len(self.encodings.input_ids)

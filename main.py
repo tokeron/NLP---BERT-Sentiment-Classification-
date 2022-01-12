@@ -7,7 +7,10 @@ from sklearn.metrics import f1_score
 from datasets import load_dataset, load_metric
 import transformers
 from competitive_model import UnlabeledDataset, dataset_2_masked_labeled_inputs
+import os
+import pickle
 
+# os.environ["TOKENIZERS_PARALLELISM"] = "true"
 # path to the data
 baby_path = Path("clean_data/baby")
 office_products_path = Path("clean_data/baby")
@@ -27,6 +30,11 @@ if __name__ == '__main__':
     bert_for_pretraining = BertForMaskedLM.from_pretrained('bert-base-uncased')
     model_seq_classification = AutoModelForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+    # device
+    # Set device
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    bert_for_pretraining.to(device=device) #model to device
 
     # Defining The Datasets
     unlabeled_data_files = {
@@ -57,12 +65,13 @@ if __name__ == '__main__':
     inputs = dataset_2_masked_labeled_inputs(dataset=baby_dataset, tokenizer=tokenizer)
     # create unlabeled dataset from it
     tokenized_unlabeled_dataset_baby = UnlabeledDataset(inputs)
+    # tokenized_unlabeled_dataset_baby.set_format('torch')
 
     # Unsupervised training by unlabeled data
     # define the arguments for the trainer
     bert_pretraining_args = TrainingArguments(
         output_dir='pytorch_finetuned_model',  # output directory
-        num_train_epochs=3,  # total # of training epochs
+        num_train_epochs=1,  # total # of training epochs
         per_device_train_batch_size=8,  # batch size per device during training (try 16 if needed)
         per_device_eval_batch_size=8,  # batch size for evaluation
         warmup_steps=500,  # number of warmup steps for learning rate scheduler
@@ -94,6 +103,9 @@ if __name__ == '__main__':
     # Pretraining The Model
     bert_baby_pretrainer.train()
     # bert_office_products_pretrainer.train()
+
+    with open('bert_baby_pretrainer_trained.pickle','wb') as pickle_bert:
+        pickle.dump(bert_baby_pretrainer, pickle_bert)
 
     print('done unlabeled')
 
