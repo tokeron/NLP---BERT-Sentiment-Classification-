@@ -45,6 +45,10 @@ if __name__ == '__main__':
         'train': str(baby_path / 'train.csv'),
         'test': str(office_products_path / 'dev.csv')
     }
+    # import pandas as pd
+    # from sklearn.model_selection import train_test_split
+    # train_short = pd.read_csv(data_files['train'])
+    # train_80, train_20 = train_test_split(train_short, test_size=0.2)
 
     # Load data
     unlabeled_raw_datasets = load_dataset("csv", data_files=unlabeled_data_files)
@@ -129,6 +133,16 @@ if __name__ == '__main__':
     trainer.train()
 
     print(trainer.evaluate())
+
+
+def make_predictions(model, df):
+    df.insert(1, "label", "")
+    for index, text in df.iterrows():
+        text = df.at[index, "review"]
+        df.at[index, "label"] = model(text)
+    df.to_csv("313362014.csv")
+
+
 
 
 
